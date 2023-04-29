@@ -9,7 +9,7 @@ trait Translatable
     public static function trans(array $components): array
     {
         return collect($components)
-            ->map(function ($component) {
+            ->each(function ($component) {
                 if (method_exists($component, 'translate')) {
                     $component->translate(self::getTransPath());
                 }
