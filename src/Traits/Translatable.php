@@ -8,13 +8,18 @@ trait Translatable
 
     public static function trans(array $components): array
     {
+        $path = self::getTransPath();
+        
         return collect($components)
-            ->each(function ($component) {
-//                if (method_exists($component, 'translate')) {
-                $component->translate(self::getTransPath());
-//                }
+            ->each(function ($component) use ($path) {
+                $component->translate($path);
             })
             ->toArray();
+    }
+
+    public static function transFor(string $key, array $replace = [], ?string $locale = null): string
+    {
+        return __(self::getTransPath() . '.' . $key, $replace, $locale);
     }
 
     public static function getTransPath(): string
