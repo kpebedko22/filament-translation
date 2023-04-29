@@ -11,6 +11,24 @@ class FilamentTranslationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootMacros();
+        $this->bootConfig();
+    }
+
+    public function register()
+    {
+        $this->registerConfig();
+    }
+
+    protected function registerConfig()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/filament-translation.php', 'filament-translation');
+    }
+
+    public function bootConfig()
+    {
+        $this->publishes([
+            __DIR__ . '/../config/filament-translation.php' => config_path('filament-translation.php'),
+        ], 'config');
     }
 
     public function bootMacros()
