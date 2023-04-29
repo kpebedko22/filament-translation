@@ -30,9 +30,11 @@ class FilamentTranslationServiceProvider extends ServiceProvider
 
     public function bootConfig()
     {
-        $this->publishes([
-            __DIR__ . '/../config/filament-translation.php' => config_path('filament-translation.php'),
-        ], 'config');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/filament-translation.php' => config_path('filament-translation.php'),
+            ], 'filament-translation-config');
+        }
     }
 
     public function bootMixins()
