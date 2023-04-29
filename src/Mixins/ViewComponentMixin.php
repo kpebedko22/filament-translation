@@ -7,7 +7,9 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Filters\Filter;
 
 class ViewComponentMixin
 {
@@ -34,16 +36,30 @@ class ViewComponentMixin
 
                     break;
                 case Checkbox::class:
-                    /** @var Checkbox $this */
+                case Toggle::class:
+                    /** @var Checkbox|Toggle $this */
 
                     $name = $this->getName();
                     $this->label(__("$path.$labelKey.$name"));
 
                     break;
 
-                case TextColumn::class:
-                    /** @var TextColumn $this */
+                case Column::class:
+                    /** @var Column $this */
+                    $name = $this->getName();
 
+                    $this->label(__("$path.$labelKey.$name"));
+
+                    break;
+
+                case Filter::class:
+                    /** @var Filter $this */
+
+                    $name = $this->getName();
+
+                    $this->label(__("$path.$labelKey.$name"));
+
+                    break;
 
                 default:
                     break;

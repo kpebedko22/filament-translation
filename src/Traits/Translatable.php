@@ -10,9 +10,9 @@ trait Translatable
     {
         return collect($components)
             ->each(function ($component) {
-                if (method_exists($component, 'translate')) {
-                    $component->translate(self::getTransPath());
-                }
+//                if (method_exists($component, 'translate')) {
+                $component->translate(self::getTransPath());
+//                }
             })
             ->toArray();
     }
