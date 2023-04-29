@@ -1,0 +1,33 @@
+{
+    "name": "kpebedko22/filament-translation",
+    "description": "Package for simply translate filament components.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kpebedko22\\FilamentTranslation\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexander Voytsekhovsky",
+            "homepage": "https://github.com/kpebedko22",
+            "role": "Software Engineer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.0",
+        "illuminate/contracts": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
+        "filament/filament": "^2.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kpebedko22\\FilamentTranslation\\FilamentTranslationServiceProvider"
+            ]
+        }
+    }
+}
