@@ -2,15 +2,19 @@
 
 namespace Kpebedko22\FilamentTranslation;
 
-use Filament\Forms\Components;
+use Kpebedko22\FilamentTranslation\Mixins\ViewComponentMixin;
 use Filament\Support\Components\ViewComponent;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentTranslationServiceProvider extends ServiceProvider
 {
+    protected array $mixins = [
+        ViewComponent::class => ViewComponentMixin::class,
+    ];
+
     public function boot(): void
     {
-        $this->bootMacros();
+        $this->bootMixins();
         $this->bootConfig();
     }
 
@@ -31,40 +35,10 @@ class FilamentTranslationServiceProvider extends ServiceProvider
         ], 'config');
     }
 
-    public function bootMacros()
+    public function bootMixins()
     {
-        ViewComponent::macro('translate', function (
-            string $path,
-            string $labelKey = 'common',
-            string $placeholderKey = 'placeholder',
-        ) {
-            $class = get_class($this);
-
-            switch ($class) {
-                case Components\TextInput::class:
-                case Components\Select::class:
-                case Components\Textarea::class:
-
-                    /** @var Components\TextInput|Components\Select|Components\Textarea $this */
-
-                    $name = $this->getName();
-
-                    $this->label(__("$path.$labelKey.$name"))
-                        ->placeholder(__("$path.$placeholderKey.$name"));
-
-                    break;
-                case Components\Checkbox::class:
-                    /** @var Components\Checkbox $this */
-
-                    $name = $this->getName();
-                    $this->label(__("$path.$labelKey.$name"));
-
-                    break;
-                default:
-                    break;
-            }
-
-            return $this;
-        });
+        foreach ($this->mixins as $class => $mixin) {
+            $class::mixin(new $mixin);
+        }
     }
 }
