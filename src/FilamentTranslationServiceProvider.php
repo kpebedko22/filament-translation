@@ -18,17 +18,17 @@ class FilamentTranslationServiceProvider extends ServiceProvider
         $this->bootConfig();
     }
 
-    public function register()
+    public function register(): void
     {
         $this->registerConfig();
     }
 
-    protected function registerConfig()
+    protected function registerConfig(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/filament-translation.php', 'filament-translation');
     }
 
-    public function bootConfig()
+    public function bootConfig(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -37,7 +37,7 @@ class FilamentTranslationServiceProvider extends ServiceProvider
         }
     }
 
-    public function bootMixins()
+    public function bootMixins(): void
     {
         foreach ($this->mixins as $class => $mixin) {
             $class::mixin(new $mixin);

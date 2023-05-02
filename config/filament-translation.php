@@ -12,6 +12,10 @@ return [
     */
     'path' => 'filament/resource/',
 
+    'attribute_key' => 'common',
+
+    'placeholder_key' => 'placeholder',
+
     /*
     |--------------------------------------------------------------------------
     | Use Translation Path
@@ -22,4 +26,27 @@ return [
     |
     */
     'use_path' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Common translations
+    |--------------------------------------------------------------------------
+    |
+    |
+    |
+    */
+    'common' => [
+        'path' => 'filament/common',
+
+        'attribute_key' => 'common',
+
+        'placeholder_key' => 'placeholder',
+    ],
+
+    'page' => [
+        'list' => 'label.main',
+        'create' => 'label.create',
+        'edit' => 'label.edit',
+        'view' => 'label.view',
+    ],
 ];
