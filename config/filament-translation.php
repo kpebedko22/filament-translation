@@ -18,17 +18,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Use Translation Path
-    |--------------------------------------------------------------------------
-    |
-    | If set to true, then by default each translation will start with 'path'.
-    | Otherwise, each translation will be started from lang folder.
-    |
-    */
-    'use_path' => true,
-
-    /*
-    |--------------------------------------------------------------------------
     | Common translations
     |--------------------------------------------------------------------------
     |
@@ -36,11 +25,19 @@ return [
     |
     */
     'common' => [
+        'is_using' => true,
+
         'path' => 'filament/common',
 
         'attribute_key' => 'common',
 
         'placeholder_key' => 'placeholder',
+
+        'attributes' => [
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ],
     ],
 
     'page' => [

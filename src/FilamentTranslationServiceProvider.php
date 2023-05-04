@@ -2,9 +2,9 @@
 
 namespace Kpebedko22\FilamentTranslation;
 
-use Kpebedko22\FilamentTranslation\Mixins\ViewComponentMixin;
 use Filament\Support\Components\ViewComponent;
 use Illuminate\Support\ServiceProvider;
+use Kpebedko22\FilamentTranslation\Mixins\ViewComponentMixin;
 
 class FilamentTranslationServiceProvider extends ServiceProvider
 {

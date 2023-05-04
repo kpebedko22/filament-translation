@@ -5,91 +5,43 @@ namespace Kpebedko22\FilamentTranslation\Traits;
 use Filament\Forms\Components\Field;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\Filter;
+use Kpebedko22\FilamentTranslation\FilamentTranslation;
 
 trait Translatable
 {
-    abstract public static function transKey(): string;
+    abstract public static function translation(): FilamentTranslation;
 
-    public static function trans(array $components, array $commons = []): array
+    public static function trans(array $components): array
     {
-        $path = self::getTransPath();
-        $attributeKey = self::getTransAttributeKey();
-        $placeholderKey = self::getTransPlaceholderKey();
+        $translation = static::translation();
 
-        $commonPath = self::getTransCommonPath();
-        $commonAttributeKey = self::getTransCommonAttributeKey();
-        $commonPlaceholderKey = self::getTransCommonPlaceholderKey();
+        array_walk($components, static function ($component) use ($translation) {
 
-        return collect($components)
-            ->filter(function ($component) {
-                return $component instanceof Field ||
-                    $component instanceof Column ||
-                    $component instanceof Filter;
-            })
-            ->each(function (Field|Column|Filter $component) use (
-                $path,
-                $attributeKey,
-                $placeholderKey,
-                $commons,
-                $commonPath,
-                $commonAttributeKey,
-                $commonPlaceholderKey,
+            if ($component instanceof Field ||
+                $component instanceof Column ||
+                $component instanceof Filter
             ) {
-
                 $name = $component->getName();
+                $useCommon = $translation->hasCommon($name);
 
-                [$usePath, $useAttrKey, $usePlaceholderKey] = in_array($name, $commons)
-                    ? [$commonPath, $commonAttributeKey, $commonPlaceholderKey]
-                    : [$path, $attributeKey, $placeholderKey];
+                [$path, $attrKey, $placeholderKey] = $useCommon
+                    ? $translation->forCommon()
+                    : $translation->forUsual();
 
-                $component->translate($usePath, $useAttrKey, $usePlaceholderKey);
-            })
-            ->toArray();
+                $component->translate($path, $attrKey, $placeholderKey);
+            }
+        });
+
+        return $components;
     }
 
-    public static function transFor(string $key, array $replace = [], ?string $locale = null, bool $useCommon = false): string
+    public static function transFor(
+        string  $key,
+        array   $replace = [],
+        ?string $locale = null,
+        bool    $useCommon = false
+    ): string
     {
-        $path = $useCommon ? self::getTransPath() : self::getTransCommonPath();
-
-        return __("$path.$key", $replace, $locale);
-    }
-
-    public static function getTransPath(): string
-    {
-        $relPath = self::useTransRelativePath()
-            ? config('filament-translation.path')
-            : '';
-
-        return $relPath . self::transKey();
-    }
-
-    public static function useTransRelativePath(): bool
-    {
-        return config('filament-translation.use_path');
-    }
-
-    public static function getTransAttributeKey(): string
-    {
-        return config('filament-translation.attribute_key');
-    }
-
-    public static function getTransPlaceholderKey(): string
-    {
-        return config('filament-translation.placeholder_key');
-    }
-
-    public static function getTransCommonPath(): string
-    {
-        return config('filament-translation.common.path');
-    }
-
-    public static function getTransCommonAttributeKey(): string
-    {
-        return config('filament-translation.common.attribute_key');
-    }
-
-    public static function getTransCommonPlaceholderKey(): string
-    {
-        return config('filament-translation.common.placeholder_key');
+        return static::translation()->transFor($key, $replace, $locale, $useCommon);
     }
 }
