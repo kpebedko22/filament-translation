@@ -24,6 +24,12 @@ final class FilamentTranslation
     protected string $commonPlaceholderKey;
     protected array $commonAttributes;
 
+    protected string $labelKey;
+    protected string $labelList;
+    protected string $labelView;
+    protected string $labelEdit;
+    protected string $labelCreate;
+
     protected function __construct(
         string  $resource,
         string  $filename,
@@ -38,6 +44,7 @@ final class FilamentTranslation
         $this->attributeKey($attr);
         $this->placeholderKey($placeholder);
         $this->common();
+        $this->labels();
     }
 
     /**
@@ -146,9 +153,46 @@ final class FilamentTranslation
     public function forUsual(): array
     {
         return [
-            $this->path,
+            $this->path . $this->filename,
             $this->attributeKey,
             $this->placeholderKey,
         ];
+    }
+
+    public function labels(
+        ?string $key = null,
+        ?string $list = null,
+        ?string $view = null,
+        ?string $edit = null,
+        ?string $create = null,
+    ): FilamentTranslation
+    {
+        $this->labelKey = $key ?: config('filament-translation.label_key');
+        $this->labelList = $list ?: config('filament-translation.label.list');
+        $this->labelView = $view ?: config('filament-translation.label.view');
+        $this->labelEdit = $edit ?: config('filament-translation.label.edit');
+        $this->labelCreate = $create ?: config('filament-translation.label.create');
+
+        return $this;
+    }
+
+    public function getLabelList(): string
+    {
+        return $this->transFor($this->labelList);
+    }
+
+    public function getLabelView(): string
+    {
+        return $this->transFor($this->labelView);
+    }
+
+    public function getLabelCreate(): string
+    {
+        return $this->transFor($this->labelCreate);
+    }
+
+    public function getLabelEdit(): string
+    {
+        return $this->transFor($this->labelEdit);
     }
 }

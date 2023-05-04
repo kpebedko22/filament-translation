@@ -16,6 +16,8 @@ return [
 
     'placeholder_key' => 'placeholder',
 
+    'label_key' => 'label',
+
     /*
     |--------------------------------------------------------------------------
     | Common translations
@@ -40,10 +42,10 @@ return [
         ],
     ],
 
-    'page' => [
-        'list' => 'label.main',
-        'create' => 'label.create',
-        'edit' => 'label.edit',
-        'view' => 'label.view',
+    'label' => [
+        'list' => 'list',
+        'view' => 'view',
+        'edit' => 'edit',
+        'create' => 'create',
     ],
 ];
