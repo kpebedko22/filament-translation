@@ -178,21 +178,21 @@ final class FilamentTranslation
 
     public function getLabelList(): string
     {
-        return $this->transFor($this->labelList);
+        return $this->transFor("$this->labelKey.$this->labelList");
     }
 
     public function getLabelView(): string
     {
-        return $this->transFor($this->labelView);
+        return $this->transFor("$this->labelKey.$this->labelView");
     }
 
     public function getLabelCreate(): string
     {
-        return $this->transFor($this->labelCreate);
+        return $this->transFor("$this->labelKey.$this->labelCreate");
     }
 
     public function getLabelEdit(): string
     {
-        return $this->transFor($this->labelEdit);
+        return $this->transFor("$this->labelKey.$this->labelEdit");
     }
 }
