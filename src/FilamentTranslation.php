@@ -2,8 +2,12 @@
 
 namespace Kpebedko22\FilamentTranslation;
 
+use Illuminate\Support\Traits\Macroable;
+
 final class FilamentTranslation
 {
+    use Macroable;
+
     /**
      * Unique key of translation config
      */
@@ -64,7 +68,6 @@ final class FilamentTranslation
         $instance = FilamentTranslationManager::getInstance()->get($resource);
 
         if (!$instance) {
-            // TODO: try cloning object
             $instance = new self($resource, $filename, $attr, $placeholder);
 
             FilamentTranslationManager::getInstance()->save($instance);
