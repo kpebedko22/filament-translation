@@ -21,7 +21,7 @@
         "php": "^8.0",
         "illuminate/contracts": "^9.0|^10.0",
         "illuminate/support": "^9.0|^10.0",
-        "filament/filament": "^2.0|^3.0"
+        "filament/filament": "^2.0|^3.0@stable"
     },
     "extra": {
         "laravel": {
