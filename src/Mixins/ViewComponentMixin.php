@@ -5,6 +5,7 @@ namespace Kpebedko22\FilamentTranslation\Mixins;
 use Closure;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\Filter;
 
@@ -30,6 +31,13 @@ class ViewComponentMixin
                         /** @var HasPlaceholder $this */
                         $this->placeholder(__("$path.$placeholderKey.$name"));
                     }
+                },
+
+                $this instanceof Placeholder => function () use ($path, $labelKey) {
+                    /** @var Column $this */
+                    $name = $this->getName();
+
+                    $this->label(__("$path.$labelKey.$name"));
                 },
 
                 $this instanceof Column => function () use ($path, $labelKey) {

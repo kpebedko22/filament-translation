@@ -3,6 +3,7 @@
 namespace Kpebedko22\FilamentTranslation\Traits;
 
 use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\Filter;
 use Kpebedko22\FilamentTranslation\FilamentTranslation;
@@ -18,6 +19,7 @@ trait Translatable
         array_walk($components, static function ($component) use ($translation) {
 
             if ($component instanceof Field ||
+                $component instanceof Placeholder ||
                 $component instanceof Column ||
                 $component instanceof Filter
             ) {
