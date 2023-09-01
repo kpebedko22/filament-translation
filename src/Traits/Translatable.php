@@ -24,11 +24,11 @@ trait Translatable
                 $component instanceof Filter
             ) {
                 $name = $component->getName();
-                $useCommon = $translation->hasCommon($name);
+                $useCommon = $translation->hasGlobal($name);
 
                 [$path, $attrKey, $placeholderKey] = $useCommon
-                    ? $translation->forCommon()
-                    : $translation->forUsual();
+                    ? $translation->getConfigForGlobal()
+                    : $translation->getConfigForDefault();
 
                 $component->translate($path, $attrKey, $placeholderKey);
             }

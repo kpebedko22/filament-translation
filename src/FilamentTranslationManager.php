@@ -31,7 +31,7 @@ final class FilamentTranslationManager
 
     public function save(FilamentTranslation $translation): FilamentTranslationManager
     {
-        $this->cached[$translation->getKey()] = $translation;
+        $this->cached[$translation->getClass()] = $translation;
 
         return $this;
     }
@@ -42,6 +42,6 @@ final class FilamentTranslationManager
 
     public function __wakeup()
     {
-        throw new RuntimeException("Cannot unserialize singleton");
+        throw new RuntimeException('Cannot unserialize singleton');
     }
 }

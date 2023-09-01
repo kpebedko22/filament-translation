@@ -3,157 +3,82 @@
 namespace Kpebedko22\FilamentTranslation;
 
 use Illuminate\Support\Traits\Macroable;
+use Kpebedko22\FilamentTranslation\Concerns\HasGlobalAttributes;
 
 final class FilamentTranslation
 {
-    use Macroable;
+    use Macroable,
+        HasGlobalAttributes;
 
     /**
-     * Unique key of translation config
+     * Unique class name for manager
      */
-    protected string $key;
+    private string $class;
 
     /**
-     * File with translations
+     * Path to file with translation
      */
-    protected string $filename;
+    private string $filename;
 
-    protected string $path;
-    protected string $attributeKey;
-    protected string $placeholderKey;
+    // TODO: основные настройки, где лежит файл, где лежат аттрибуеты и их плейсхолдеры
+    private string $path = 'filament/resource/';
+    private string $attributeKey = 'attribute';
+    private string $placeholderKey = 'placeholder';
 
-    protected bool $commonIsUsing;
-    protected string $commonPath;
-    protected string $commonAttributeKey;
-    protected string $commonPlaceholderKey;
-    protected array $commonAttributes;
-
-    protected string $labelKey;
-    protected string $labelList;
-    protected string $labelView;
-    protected string $labelEdit;
-    protected string $labelCreate;
-
-    protected function __construct(
-        string  $resource,
-        string  $filename,
-        ?string $attr = null,
-        ?string $placeholder = null,
-    )
+    protected function __construct(string $class, string $filename)
     {
-        $this->key = $resource;
+        $this->class = $class;
         $this->filename = $filename;
-
-        $this->path();
-        $this->attributeKey($attr);
-        $this->placeholderKey($placeholder);
-        $this->common();
-        $this->labels();
     }
 
     /**
-     * @param string $resource Name of filament resource
+     * @param string $class Name of class
      * @param string $filename Name of file with translations
-     * @param string|null $attr Attribute key, if set null then used value from config
-     * @param string|null $placeholder Placeholder key, if set null then used value from config
+     *
      * @return FilamentTranslation
      */
-    public static function make(
-        string  $resource,
-        string  $filename,
-        ?string $attr = null,
-        ?string $placeholder = null,
-    ): FilamentTranslation
+    public static function make(string $class, string $filename): FilamentTranslation
     {
-        $instance = FilamentTranslationManager::getInstance()->get($resource);
+        $manager = FilamentTranslationManager::getInstance();
 
-        if (!$instance) {
-            $instance = new self($resource, $filename, $attr, $placeholder);
+        $instance = $manager->get($class);
 
-            FilamentTranslationManager::getInstance()->save($instance);
+        if ($instance === null) {
+            $instance = new self($class, $filename);
+
+            $manager->save($instance);
         }
 
         return $instance;
     }
 
-    public function path(?string $path = null): FilamentTranslation
+    public function path(string $path): FilamentTranslation
     {
-        $this->path = $path ?: config('filament-translation.path');
+        $this->path = $path;
 
         return $this;
     }
 
-    public function attributeKey(?string $key = null): FilamentTranslation
+    public function attributeKey(string $key): FilamentTranslation
     {
-        $this->attributeKey = $key ?: config('filament-translation.attribute_key');
+        $this->attributeKey = $key;
 
         return $this;
     }
 
-    public function placeholderKey(?string $key = null): FilamentTranslation
+    public function placeholderKey(string $key): FilamentTranslation
     {
-        $this->placeholderKey = $key ?: config('filament-translation.placeholder_key');
+        $this->placeholderKey = $key;
 
         return $this;
     }
 
-    public function hasCommon(string $attr): bool
+    public function getClass(): string
     {
-        return in_array($attr, $this->commonAttributes);
+        return $this->class;
     }
 
-    public function common(
-        ?bool   $isUsing = null,
-        ?string $path = null,
-        ?string $attr = null,
-        ?string $placeholder = null,
-        ?array  $attributes = null,
-    ): FilamentTranslation
-    {
-        $this->commonPath = $path ?: config('filament-translation.common.path');
-        $this->commonAttributeKey = $attr ?: config('filament-translation.common.attribute_key');
-        $this->commonPlaceholderKey = $placeholder ?: config('filament-translation.common.placeholder_key');
-
-        $this->commonIsUsing = $isUsing === null
-            ? config('filament-translation.common.is_using')
-            : $isUsing;
-
-        $this->commonAttributes = $attributes === null
-            ? config('filament-translation.common.attributes')
-            : $attributes;
-
-        return $this;
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    public function transFor(
-        string  $key,
-        array   $replace = [],
-        ?string $locale = null,
-        bool    $useCommon = false
-    )
-    {
-        $path = $useCommon
-            ? $this->commonPath
-            : $this->path . $this->filename;
-
-        return __("$path.$key", $replace, $locale);
-    }
-
-    public function forCommon(): array
-    {
-        return [
-            $this->commonPath,
-            $this->commonAttributeKey,
-            $this->commonPlaceholderKey,
-        ];
-    }
-
-    public function forUsual(): array
+    public function getConfigForDefault(): array
     {
         return [
             $this->path . $this->filename,
@@ -161,6 +86,23 @@ final class FilamentTranslation
             $this->placeholderKey,
         ];
     }
+
+    public function transFor(string $key, array $replace = [], ?string $locale = null, bool $useGlobal = false): string
+    {
+        $path = $useGlobal
+            ? $this->globalPath
+            : $this->path . $this->filename;
+
+        return __("$path.$key", $replace, $locale);
+    }
+
+    // TODO: то что ниже - надо рефакторить на concerns
+
+    protected string $labelKey;
+    protected string $labelList;
+    protected string $labelView;
+    protected string $labelEdit;
+    protected string $labelCreate;
 
     public function labels(
         ?string $key = null,
