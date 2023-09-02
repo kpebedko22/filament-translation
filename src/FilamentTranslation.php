@@ -4,11 +4,15 @@ namespace Kpebedko22\FilamentTranslation;
 
 use Illuminate\Support\Traits\Macroable;
 use Kpebedko22\FilamentTranslation\Concerns\HasGlobalAttributes;
+use Kpebedko22\FilamentTranslation\Concerns\HasLabelAttributes;
+use Kpebedko22\FilamentTranslation\Concerns\HasLocalAttributes;
 
 final class FilamentTranslation
 {
     use Macroable,
-        HasGlobalAttributes;
+        HasLocalAttributes,
+        HasGlobalAttributes,
+        HasLabelAttributes;
 
     /**
      * Unique class name for manager
@@ -19,11 +23,6 @@ final class FilamentTranslation
      * Path to file with translation
      */
     private string $filename;
-
-    // TODO: основные настройки, где лежит файл, где лежат аттрибуеты и их плейсхолдеры
-    private string $path = 'filament/resource/';
-    private string $attributeKey = 'attribute';
-    private string $placeholderKey = 'placeholder';
 
     protected function __construct(string $class, string $filename)
     {
@@ -52,92 +51,37 @@ final class FilamentTranslation
         return $instance;
     }
 
-    public function path(string $path): FilamentTranslation
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function attributeKey(string $key): FilamentTranslation
-    {
-        $this->attributeKey = $key;
-
-        return $this;
-    }
-
-    public function placeholderKey(string $key): FilamentTranslation
-    {
-        $this->placeholderKey = $key;
-
-        return $this;
-    }
-
     public function getClass(): string
     {
         return $this->class;
-    }
-
-    public function getConfigForDefault(): array
-    {
-        return [
-            $this->path . $this->filename,
-            $this->attributeKey,
-            $this->placeholderKey,
-        ];
     }
 
     public function transFor(string $key, array $replace = [], ?string $locale = null, bool $useGlobal = false): string
     {
         $path = $useGlobal
             ? $this->globalPath
-            : $this->path . $this->filename;
+            : $this->localPath . $this->filename;
 
         return __("$path.$key", $replace, $locale);
     }
 
-    // TODO: то что ниже - надо рефакторить на concerns
-
-    protected string $labelKey;
-    protected string $labelList;
-    protected string $labelView;
-    protected string $labelEdit;
-    protected string $labelCreate;
-
-    public function labels(
-        ?string $key = null,
-        ?string $list = null,
-        ?string $view = null,
-        ?string $edit = null,
-        ?string $create = null,
-    ): FilamentTranslation
-    {
-        $this->labelKey = $key ?: config('filament-translation.label_key');
-        $this->labelList = $list ?: config('filament-translation.label.list');
-        $this->labelView = $view ?: config('filament-translation.label.view');
-        $this->labelEdit = $edit ?: config('filament-translation.label.edit');
-        $this->labelCreate = $create ?: config('filament-translation.label.create');
-
-        return $this;
-    }
-
     public function getLabelList(): string
     {
-        return $this->transFor("$this->labelKey.$this->labelList");
+        return $this->transFor("$this->labelKey.$this->labelListKey");
     }
 
     public function getLabelView(): string
     {
-        return $this->transFor("$this->labelKey.$this->labelView");
+        return $this->transFor("$this->labelKey.$this->labelViewKey");
     }
 
     public function getLabelCreate(): string
     {
-        return $this->transFor("$this->labelKey.$this->labelCreate");
+        return $this->transFor("$this->labelKey.$this->labelCreateKey");
     }
 
     public function getLabelEdit(): string
     {
-        return $this->transFor("$this->labelKey.$this->labelEdit");
+        return $this->transFor("$this->labelKey.$this->labelEditKey");
     }
 }

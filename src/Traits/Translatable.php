@@ -24,11 +24,11 @@ trait Translatable
                 $component instanceof Filter
             ) {
                 $name = $component->getName();
-                $useCommon = $translation->hasGlobal($name);
+                $useCommon = $translation->globalHas($name);
 
                 [$path, $attrKey, $placeholderKey] = $useCommon
-                    ? $translation->getConfigForGlobal()
-                    : $translation->getConfigForDefault();
+                    ? $translation->globalConfig()
+                    : $translation->localConfig();
 
                 $component->translate($path, $attrKey, $placeholderKey);
             }
@@ -41,9 +41,9 @@ trait Translatable
         string  $key,
         array   $replace = [],
         ?string $locale = null,
-        bool    $useCommon = false
+        bool    $useGlobal = false
     ): string
     {
-        return static::translation()->transFor($key, $replace, $locale, $useCommon);
+        return static::translation()->transFor($key, $replace, $locale, $useGlobal);
     }
 }

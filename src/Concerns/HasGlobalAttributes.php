@@ -4,13 +4,7 @@ namespace Kpebedko22\FilamentTranslation\Concerns;
 
 trait HasGlobalAttributes
 {
-    private bool $isUsingGlobal = true;
-
-    private array $globalAttributes = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
+    private bool $globalInUse = true;
 
     private string $globalPath = 'filament/global';
 
@@ -18,12 +12,24 @@ trait HasGlobalAttributes
 
     private string $globalPlaceholderKey = 'placeholder';
 
-    public function hasGlobal(string $attribute): bool
+    private array $globalAttributes = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    private array $globalAttributesToIgnore = [];
+
+    public function globalHas(string $attribute): bool
     {
-        return in_array($attribute, $this->globalAttributes);
+        return in_array(
+            $attribute,
+            array_diff($this->globalAttributes, $this->globalAttributesToIgnore)
+        );
     }
 
-    public function getConfigForGlobal(): array
+    public function globalConfig(): array
     {
         return [
             $this->globalPath,
@@ -32,16 +38,16 @@ trait HasGlobalAttributes
         ];
     }
 
-    public function isUsingGlobal(bool $isUsing): static
+    public function globalInUse(bool $inUse): static
     {
-        $this->isUsingGlobal = $isUsing;
+        $this->globalInUse = $inUse;
 
         return $this;
     }
 
-    public function globalAttributes(array $globalAttributes): static
+    public function globalPath(string $path): static
     {
-        $this->globalAttributes = $globalAttributes;
+        $this->globalPath = $path;
 
         return $this;
     }
@@ -60,26 +66,17 @@ trait HasGlobalAttributes
         return $this;
     }
 
-//    public function common(
-//        ?bool   $isUsing = null,
-//        ?string $path = null,
-//        ?string $attr = null,
-//        ?string $placeholder = null,
-//        ?array  $attributes = null,
-//    ): FilamentTranslation
-//    {
-//        $this->commonPath = $path ?: config('filament-translation.common.path');
-//        $this->commonAttributeKey = $attr ?: config('filament-translation.common.attribute_key');
-//        $this->commonPlaceholderKey = $placeholder ?: config('filament-translation.common.placeholder_key');
-//
-//        $this->commonIsUsing = $isUsing === null
-//            ? config('filament-translation.common.is_using')
-//            : $isUsing;
-//
-//        $this->commonAttributes = $attributes === null
-//            ? config('filament-translation.common.attributes')
-//            : $attributes;
-//
-//        return $this;
-//    }
+    public function globalAttributes(array $attributes): static
+    {
+        $this->globalAttributes = $attributes;
+
+        return $this;
+    }
+
+    public function globalAttributesToIgnore(array $attributes): static
+    {
+        $this->globalAttributesToIgnore = $attributes;
+
+        return $this;
+    }
 }
